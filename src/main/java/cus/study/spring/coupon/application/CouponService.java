@@ -1,25 +1,25 @@
 package cus.study.spring.coupon.application;
 
 import cus.study.spring.coupon.domain.Coupon;
-import cus.study.spring.coupon.domain.CouponHistory;
-import cus.study.spring.coupon.domain.CouponHistoryRepository;
 import cus.study.spring.coupon.domain.CouponRepository;
 import cus.study.spring.coupon.dto.CouponRequest;
 import cus.study.spring.coupon.dto.CouponResponse;
+import cus.study.spring.coupon.exception.CouponLackException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CouponService {
 
     private final CouponRepository couponRepository;
-    private final CouponHistoryRepository couponHistoryRepository;
 
     public List<CouponResponse> findAllCoupon() {
         return couponRepository.findAll()
@@ -42,15 +42,13 @@ public class CouponService {
         final Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        final int beforeQuantity = coupon.getQuantity();
+        final int updatedCount = couponRepository.deductCoupon(coupon.getId());
 
-        coupon.deduct();
+        if (updatedCount == 0) {
+            new CouponLackException("재고가 모두 소진되었습니다.");
+        }
 
-        final int afterQuantity = coupon.getQuantity();
-
-        couponHistoryRepository.save(new CouponHistory(coupon.getId(), beforeQuantity, afterQuantity));
-
-        sleep(1000);
+        sleep(2000);
     }
 
     private void sleep(int millis) {

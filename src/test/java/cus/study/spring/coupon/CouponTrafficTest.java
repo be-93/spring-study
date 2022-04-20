@@ -3,13 +3,10 @@ package cus.study.spring.coupon;
 import cus.study.spring.coupon.application.CouponService;
 import cus.study.spring.coupon.dto.CouponRequest;
 import cus.study.spring.coupon.dto.CouponResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.util.concurrent.CountDownLatch;
@@ -19,6 +16,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 @SpringBootTest
 public class CouponTrafficTest {
 
@@ -29,15 +27,15 @@ public class CouponTrafficTest {
     CouponService couponService;
 
     @Test
-    public void deductCoupon() throws InterruptedException {
+    public void concurrencyDeductCoupon() throws InterruptedException {
         final CouponRequest couponRequest = CouponRequest.of(쿠폰_수량, 할인_가격);
         final CouponResponse createdCoupon = couponService.createCoupon(couponRequest);
 
-        final int numberOfThread = 쿠폰_수량;
-        final ExecutorService executor = Executors.newFixedThreadPool(numberOfThread);
-        final CountDownLatch latch = new CountDownLatch(numberOfThread);
+        final int tryCount = 쿠폰_수량 + 10;
+        final ExecutorService executor = Executors.newFixedThreadPool(10);
+        final CountDownLatch latch = new CountDownLatch(tryCount);
 
-        IntStream.range(0, numberOfThread)
+        IntStream.range(0, tryCount)
                 .forEach(i -> {
                     executor.execute(() -> {
                         couponService.deductCoupon(createdCoupon.getId());
@@ -51,4 +49,5 @@ public class CouponTrafficTest {
 
         assertThat(findCoupon.getQuantity()).isEqualTo(0);
     }
+
 }
