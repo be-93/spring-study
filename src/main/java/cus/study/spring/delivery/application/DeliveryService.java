@@ -6,8 +6,8 @@ import cus.study.spring.delivery.event.DeliveryEvent;
 import cus.study.spring.order.domain.Order;
 import cus.study.spring.order.domain.OrderRepository;
 import cus.study.spring.sms.event.NaverMessageEvent;
-import cus.study.spring.sms.eventhandler.MessageEventHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final OrderRepository orderRepository;
-    private final MessageEventHandler messageEventHandler;
+    private final ApplicationEventPublisher eventPublisher;
 
     public void createDelivery(DeliveryEvent deliveryEvent) {
         Delivery savedDelivery = deliveryRepository.save(deliveryEvent.toDelivery());
@@ -28,6 +28,6 @@ public class DeliveryService {
 
         final String message = String.format("%d 번 배달이 배정되었습니다.", savedDelivery.getId());
 
-        messageEventHandler.messageSenderEventPublish(new NaverMessageEvent(message));
+        eventPublisher.publishEvent(new NaverMessageEvent(message));
     }
 }
