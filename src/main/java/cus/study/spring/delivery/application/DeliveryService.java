@@ -28,6 +28,6 @@ public class DeliveryService {
 
         final String message = String.format("%d 번 배달이 배정되었습니다.", savedDelivery.getId());
 
-        eventPublisher.publishEvent(new NaverMessageEvent(message));
+        eventPublisher.publishEvent(new NaverMessageEvent(message, false));
     }
 }

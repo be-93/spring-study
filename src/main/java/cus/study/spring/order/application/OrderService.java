@@ -21,7 +21,7 @@ public class OrderService {
 
         final String message = String.format("%d 번의 주문이 접수되었습니다.", savedOrder.getId());
         final String address = String.format("%d 번 주소 1000 - 400 번지", savedOrder.getId());
-        eventPublisher.publishEvent(new KaKaOMessageEvent(message));
+        eventPublisher.publishEvent(new KaKaOMessageEvent(message, true));
         eventPublisher.publishEvent(new DeliveryEvent(savedOrder.getId(), address));
     }
 }

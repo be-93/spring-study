@@ -14,8 +14,8 @@ public class MessageEventHandler {
 
     private final MessageService messageService;
 
-    @EventListener
-    public void messageSenderEventPublish(Message message) {
+    @EventListener(condition = "!(#message.getSenderYn())")
+    public void messageSenderEventPublish(final Message message) {
         messageService.sender(message);
     }
 

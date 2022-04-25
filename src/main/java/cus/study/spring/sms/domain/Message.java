@@ -4,4 +4,6 @@ public interface Message {
     String senderTemplate();
 
     String getMessage();
+
+    boolean getSenderYn();
 }
