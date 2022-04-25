@@ -12,7 +12,7 @@ public class NaverMessageEvent implements Message {
 
     @Override
     public String senderTemplate() {
-        return "\n [네이버 메세지 처리] \n";
+        return "[네이버 메세지 처리] ";
     }
 
     @Override

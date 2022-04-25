@@ -27,7 +27,7 @@ class OrderServiceTest {
         orderService.createOrder();
 
         verify(deliveryEventHandler, times(1))
-                .createDeliveryEventPublish(any());
+                .createDelivery(any());
         verify(messageEventHandler, times(1))
                 .messageSenderEventPublish(any());
     }

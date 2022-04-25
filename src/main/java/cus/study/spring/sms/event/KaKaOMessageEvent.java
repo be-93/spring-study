@@ -12,7 +12,7 @@ public class KaKaOMessageEvent implements Message {
 
     @Override
     public String senderTemplate() {
-        return "\n [카카오 메세지 처리] \n";
+        return "[카카오 메세지 처리] ";
     }
 
     @Override
