@@ -2,8 +2,10 @@ package cus.study.spring.order.dto;
 
 import cus.study.spring.order.domain.Order;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class OrderRequest {
     private Long deliveryId;
 
