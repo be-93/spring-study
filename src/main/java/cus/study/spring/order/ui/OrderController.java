@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,15 +36,24 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createOrder() {
-        orderService.createOrder();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrderResponse> createOrder() {
+        Order savedOrder = orderService.createOrder();
+        URI uri = URI.create("order/" + savedOrder.getId());
+
+        return ResponseEntity.created(uri)
+                .body(OrderResponse.of(savedOrder));
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<Void> updateDeliveryId(@PathVariable("orderId") Long orderId,
+    public ResponseEntity<OrderResponse> updateDeliveryId(@PathVariable("orderId") Long orderId,
                                                  @RequestBody OrderRequest orderRequest) {
-        orderService.updateDeliverId(orderId, orderRequest);
+        Order order = orderService.updateDeliverId(orderId, orderRequest);
+        return ResponseEntity.ok(OrderResponse.of(order));
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable("orderId") Long orderId) {
+        orderService.deleteOrder(orderId);
         return ResponseEntity.noContent()
                 .build();
     }

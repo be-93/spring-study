@@ -7,6 +7,7 @@ import cus.study.spring.order.dto.OrderRequest;
 import cus.study.spring.sms.event.KaKaOMessageEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -21,31 +22,43 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public void createOrder() {
+    public Order createOrder() {
         final Order savedOrder = orderRepository.save(new Order());
 
         final String message = String.format("%d 번의 주문이 접수되었습니다.", savedOrder.getId());
         final String address = String.format("%d 번 주소 1000 - 400 번지", savedOrder.getId());
         eventPublisher.publishEvent(new KaKaOMessageEvent(message, true));
         eventPublisher.publishEvent(new DeliveryEvent(savedOrder.getId(), address));
+
+        return savedOrder;
     }
 
     public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
-    @Cacheable(value = "order-single", key = "#orderId")
+    @Cacheable(value = "order", key = "#orderId")
     @Transactional(readOnly = true)
     public Order findOneOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow();
     }
 
-    @CacheEvict(value = "order-single", key = "#orderId")
-    public void updateDeliverId(Long orderId, OrderRequest orderRequest) {
+    @CachePut(value = "order", key = "#orderId")
+    public Order updateDeliverId(Long orderId, OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow();
 
         order.updateDelivery(orderRequest.getDeliveryId());
+
+        return order;
+    }
+
+    @CacheEvict(value = "order", key = "#orderId")
+    public void deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow();
+
+        orderRepository.delete(order);
     }
 }
