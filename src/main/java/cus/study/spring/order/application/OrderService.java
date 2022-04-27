@@ -7,6 +7,7 @@ import cus.study.spring.order.dto.OrderRequest;
 import cus.study.spring.sms.event.KaKaOMessageEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,13 +34,14 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    @Cacheable(value = "order-single", key = "#orderId")
     @Transactional(readOnly = true)
     public Order findOneOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow();
     }
 
-    @CacheEvict
+    @CacheEvict(value = "order-single", key = "#orderId")
     public void updateDeliverId(Long orderId, OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow();
