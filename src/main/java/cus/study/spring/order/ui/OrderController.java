@@ -20,7 +20,7 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> findAll() {
-        List<Order> orders = orderService.findAll();
+        final List<Order> orders = orderService.findAll();
         return ResponseEntity.ok(
                 orders
                         .stream()
@@ -30,24 +30,24 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> findOneOrder(@PathVariable("orderId") Long orderId) {
-        Order order = orderService.findOneOrder(orderId);
+    public ResponseEntity<OrderResponse> findOneOrder(@PathVariable("orderId") final Long orderId) {
+        final Order order = orderService.findOneOrder(orderId);
         return ResponseEntity.ok(OrderResponse.of(order));
     }
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder() {
-        Order savedOrder = orderService.createOrder();
-        URI uri = URI.create("order/" + savedOrder.getId());
+        final Order savedOrder = orderService.createOrder();
+        final URI uri = URI.create("order/" + savedOrder.getId());
 
         return ResponseEntity.created(uri)
                 .body(OrderResponse.of(savedOrder));
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> updateDeliveryId(@PathVariable("orderId") Long orderId,
-                                                 @RequestBody OrderRequest orderRequest) {
-        Order order = orderService.updateDeliverId(orderId, orderRequest);
+    public ResponseEntity<OrderResponse> updateDeliveryId(@PathVariable("orderId") final Long orderId,
+                                                 @RequestBody final OrderRequest orderRequest) {
+        final Order order = orderService.updateDeliverId(orderId, orderRequest);
         return ResponseEntity.ok(OrderResponse.of(order));
     }
 

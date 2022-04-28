@@ -39,14 +39,14 @@ public class OrderService {
 
     @Cacheable(value = "order", key = "#orderId")
     @Transactional(readOnly = true)
-    public Order findOneOrder(Long orderId) {
+    public Order findOneOrder(final Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow();
     }
 
     @CachePut(value = "order", key = "#orderId")
-    public Order updateDeliverId(Long orderId, OrderRequest orderRequest) {
-        Order order = orderRepository.findById(orderId)
+    public Order updateDeliverId(final Long orderId, final OrderRequest orderRequest) {
+        final Order order = orderRepository.findById(orderId)
                 .orElseThrow();
 
         order.updateDelivery(orderRequest.getDeliveryId());
@@ -55,8 +55,8 @@ public class OrderService {
     }
 
     @CacheEvict(value = "order", key = "#orderId")
-    public void deleteOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+    public void deleteOrder(final Long orderId) {
+        final Order order = orderRepository.findById(orderId)
                 .orElseThrow();
 
         orderRepository.delete(order);
