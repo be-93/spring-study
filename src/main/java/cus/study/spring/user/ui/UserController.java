@@ -22,6 +22,12 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.of(user));
     }
 
+    @GetMapping("/redis/{userEmail}")
+    public ResponseEntity<UserResponse> findOneRedisUser(@PathVariable final String userEmail) {
+        User user = userService.findOneRedisUser(userEmail);
+        return ResponseEntity.ok(UserResponse.of(user));
+    }
+
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest userRequest) {
         User user = userService.createUser(userRequest);
