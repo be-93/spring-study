@@ -10,6 +10,4 @@ public interface GenericMapper<D, E>{
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromDto(D dto, @MappingTarget E entity);
-
-
 }
