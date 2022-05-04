@@ -2,8 +2,11 @@ package cus.study.spring.user.application;
 
 import cus.study.spring.user.domain.User;
 import cus.study.spring.user.domain.UserRepository;
+import cus.study.spring.user.dto.UserDto;
 import cus.study.spring.user.dto.UserRequest;
+import cus.study.spring.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Transactional(readOnly = true)
     public User findOneUser(final String userEmail) {
@@ -31,6 +35,7 @@ public class UserService {
         return userRepository.save(userRequest.toUser());
     }
 
+    @CachePut(value = "user", key = "#userEmail")
     public User updateAddress(final String userEmail, final UserRequest userRequest) {
         final User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow();
@@ -38,5 +43,17 @@ public class UserService {
         user.updateAddress(userRequest.getAddress());
 
         return user;
+    }
+
+    /*mapstruct 로 update 해보기*/
+    @CachePut(value = "user", key = "#userEmail")
+    public UserDto updateAddress(final String userEmail, final UserDto userDto) {
+        User user = userRepository.findUserByEmail(userEmail)
+                .orElseThrow();
+
+        userMapper.updateFromDto(userDto, user);
+        UserDto userDto1 = userMapper.toDto(user);
+        User user1 = userMapper.toEntity(userDto);
+        return userMapper.toDto(user);
     }
 }

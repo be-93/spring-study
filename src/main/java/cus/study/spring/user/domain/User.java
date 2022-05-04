@@ -1,12 +1,12 @@
 package cus.study.spring.user.domain;
 
 import cus.study.spring.common.domain.BaseEntity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor

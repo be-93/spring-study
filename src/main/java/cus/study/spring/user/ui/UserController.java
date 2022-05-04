@@ -2,6 +2,7 @@ package cus.study.spring.user.ui;
 
 import cus.study.spring.user.application.UserService;
 import cus.study.spring.user.domain.User;
+import cus.study.spring.user.dto.UserDto;
 import cus.study.spring.user.dto.UserRequest;
 import cus.study.spring.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,12 @@ public class UserController {
                                                           @RequestBody final UserRequest userRequest) {
         User user = userService.updateAddress(userEmail, userRequest);
         return ResponseEntity.ok(UserResponse.of(user));
+    }
+
+    @PutMapping("/dto/{userEmail}")
+    public ResponseEntity<UserDto> updateUserAddress(@PathVariable final String userEmail,
+                                                          @RequestBody final UserDto userDto) {
+        UserDto user = userService.updateAddress(userEmail, userDto);
+        return ResponseEntity.ok(user);
     }
 }
