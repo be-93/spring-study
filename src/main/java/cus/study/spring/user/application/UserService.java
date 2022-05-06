@@ -52,8 +52,7 @@ public class UserService {
                 .orElseThrow();
 
         userMapper.updateFromDto(userDto, user);
-        UserDto userDto1 = userMapper.toDto(user);
-        User user1 = userMapper.toEntity(userDto);
+
         return userMapper.toDto(user);
     }
 }
