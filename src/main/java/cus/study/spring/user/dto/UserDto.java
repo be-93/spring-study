@@ -13,4 +13,10 @@ public class UserDto implements Serializable {
     private String email;
     private String name;
     private String address;
+
+    public UserDto(String email, String name, String address) {
+        this.email = email;
+        this.name = name;
+        this.address = address;
+    }
 }
