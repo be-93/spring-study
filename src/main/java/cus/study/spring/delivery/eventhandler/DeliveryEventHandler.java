@@ -2,6 +2,7 @@ package cus.study.spring.delivery.eventhandler;
 
 import cus.study.spring.delivery.application.DeliveryService;
 import cus.study.spring.delivery.event.DeliveryEvent;
+import cus.study.spring.order.event.OrderCreateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -38,5 +39,10 @@ public class DeliveryEventHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     public void completion(final DeliveryEvent deliveryEvent) {
         log.info("AFTER_COMPLETION");
+    }
+
+    @EventListener
+    public void createOrder(final OrderCreateEvent orderCreateEvent) {
+        deliveryService.createDelivery(new DeliveryEvent(orderCreateEvent));
     }
 }
