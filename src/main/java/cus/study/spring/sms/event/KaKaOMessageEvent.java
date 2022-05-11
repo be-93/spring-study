@@ -1,5 +1,6 @@
 package cus.study.spring.sms.event;
 
+import cus.study.spring.order.event.OrderCreateEvent;
 import cus.study.spring.sms.domain.Message;
 
 public class KaKaOMessageEvent implements Message {
@@ -10,6 +11,11 @@ public class KaKaOMessageEvent implements Message {
     public KaKaOMessageEvent(String message, boolean senderYn) {
         this.message = message;
         this.senderYn = senderYn;
+    }
+
+    public KaKaOMessageEvent(OrderCreateEvent orderCreateEvent) {
+        this.message = String.format("%d 번의 주문이 접수되었습니다.", orderCreateEvent.getOrder().getId());
+        this.senderYn = true;
     }
 
     @Override
