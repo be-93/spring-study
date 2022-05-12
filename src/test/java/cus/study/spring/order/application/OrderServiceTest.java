@@ -1,6 +1,7 @@
 package cus.study.spring.order.application;
 
 import cus.study.spring.delivery.eventhandler.DeliveryEventHandler;
+import cus.study.spring.order.event.OrderCreateEvent;
 import cus.study.spring.sms.eventhandler.MessageEventHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ class OrderServiceTest {
         orderService.createOrder();
 
         verify(deliveryEventHandler, times(1))
-                .createDelivery(any());
+                .createOrder(any());
         verify(messageEventHandler, times(1))
-                .messageSenderEventPublish(any());
+                .messageSenderEventPublish(any(OrderCreateEvent.class));
     }
 }
