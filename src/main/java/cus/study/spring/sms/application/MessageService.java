@@ -15,17 +15,24 @@ public class MessageService {
     private static int count = 0;
     private final Random random = new Random();
 
+    public void sender(Message message) {
+        log.info(message.senderTemplate() + message.getMessage());
+    }
+
     @Retryable(
             value = SMSMessageException.class,
             maxAttempts = 2,
             backoff = @Backoff(delay = 2000)
     )
-    public void sender(Message message) {
-        if (count < 2) {
+    public int retrySender() {
+        if (count < 1) {
             count++;
-            throw new SMSMessageException();
+            throw new SMSMessageException("에러 발생!!");
         }
-        log.info(message.senderTemplate() + message.getMessage());
+
+        log.info("retry Test Message");
         count = 0;
+
+        return 1;
     }
 }
