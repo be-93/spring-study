@@ -24,15 +24,15 @@ public class MessageService {
             maxAttempts = 2,
             backoff = @Backoff(delay = 2000)
     )
-    public int retrySender() {
+    public boolean retrySender() {
         if (count < 1) {
             count++;
-            throw new SMSMessageException("에러 발생!!");
+            throw new SMSMessageException();
         }
 
         log.info("retry Test Message");
         count = 0;
 
-        return 1;
+        return true;
     }
 }
